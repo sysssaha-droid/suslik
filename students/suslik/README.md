@@ -107,7 +107,8 @@ students/suslik/
 │   ├── variables.tf
 │   ├── outputs.tf
 │   ├── user_data.sh             # cloud-init: встановлення Docker
-│   └── terraform.tfvars.example
+│   ├── terraform.tfvars.example
+│   └── .terraform.lock.hcl      # зафіксовані версії AWS provider
 ├── scripts/
 │   └── bootstrap-state.sh       # одноразове створення S3-бакета для state
 ├── Dockerfile                   # двоетапна збірка, non-root, healthcheck
@@ -202,7 +203,7 @@ curl -X POST http://localhost:8000/api/readings \
   "metric": "co2",
   "value": 612.0,
   "unit": "ppm",
-  "recorded_at": "2026-11-21T14:05:00+00:00",
+  "recorded_at": "2026-11-21T14:05:00Z",
   "id": 13
 }
 ```
@@ -240,8 +241,9 @@ pytest -q
 ```
 
 Покриття: healthcheck, створення/читання вимірювань, фільтр за пристроєм,
-агрегація статистики, валідація payload, віддача дашборда та OpenAPI.
-Ті самі тести виконуються в CI на кожен push і pull request.
+агрегація статистики, валідація payload, віддача дашборда та статичних файлів,
+OpenAPI і наповнення демо-даними. Ті самі тести виконуються в CI на кожен push
+і pull request.
 
 ---
 
@@ -266,7 +268,8 @@ default VPC регіону, щоб проєкт залишався дешеви�
 ### Remote state (одноразово)
 
 Стан зберігається в S3, щоб кожен запуск пайплайна бачив уже створені ресурси.
-Створіть бакет (ім'я має бути унікальним у світі):
+Створіть бакет в тому самому регіоні, що й `AWS_REGION` (ім'я має бути
+унікальним у світі):
 
 ```bash
 cd students/suslik
@@ -379,7 +382,11 @@ terraform destroy         # видалити всі ресурси
     { "Effect": "Allow", "Action": ["ec2:*"], "Resource": "*" },
     {
       "Effect": "Allow",
-      "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:GetBucketVersioning"
+      ],
       "Resource": "arn:aws:s3:::<TF_STATE_BUCKET>"
     },
     {
@@ -495,7 +502,7 @@ aws s3 rb s3://<TF_STATE_BUCKET> --force
 | `terraform init`: bucket does not exist | Не створено S3-бакет або неправильний `TF_STATE_BUCKET` |
 | `Error acquiring the state lock` | Попередній запуск перервався; перевірте, що ніхто не виконує apply, і видаліть `*.tflock` у бакеті |
 | `use_lockfile` is not supported | Terraform < 1.10; у CI зафіксовано 1.10.5 |
-| Deploy: `Permission denied (publickey)` | `EC2_SSH_KEY_B64` містить не той ключ або ключ із паролем; перевірте Base64 без переносів рядків |
+| Deploy: `Permission denied (publickey)` | `EC2_SSH_KEY_B64` містить не той ключ або ключ захищений паролем; перевірте, що це саме приватний ключ від поточного `ec2_key` |
 | Deploy: SSH timeout | Security Group не пропускає 22 з runner'а (`SSH_CIDR`), інстанс ще стартує |
 | `docker login`: unauthorized | Перевірте `DOCKER_USERNAME` і токен (не пароль), права Read & Write |
 | Контейнер падає одразу | `docker logs ecotrack`; найчастіше — права на `/data` або зайнятий порт |
