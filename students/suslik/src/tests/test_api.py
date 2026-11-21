@@ -109,11 +109,29 @@ def test_unknown_metric_is_rejected(client: TestClient) -> None:
     assert response.status_code == 422
 
 
-def test_dashboard_and_openapi_are_served(client: TestClient) -> None:
+def test_dashboard_and_static_assets_are_served(client: TestClient) -> None:
     dashboard = client.get("/")
+    script = client.get("/static/app.js")
     schema = client.get("/openapi.json")
 
     assert dashboard.status_code == 200
     assert "EcoTrack" in dashboard.text
+    assert script.status_code == 200
+    assert "refresh" in script.text
     assert schema.status_code == 200
     assert "/api/readings" in schema.json()["paths"]
+
+
+def test_demo_seed_populates_an_empty_database(tmp_path: Path) -> None:
+    settings = Settings(
+        app_env="test",
+        database_path=str(tmp_path / "seeded.db"),
+        seed_demo=True,
+    )
+
+    with TestClient(create_app(settings)) as client:
+        stats = client.get("/api/stats").json()
+
+    assert stats["total_readings"] == 12
+    assert stats["devices"] == 3
+    assert len(stats["metrics"]) == 5
