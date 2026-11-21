@@ -1,0 +1,32 @@
+# Keep the build context small and reproducible.
+.git
+.gitignore
+.github
+infra
+scripts
+README.md
+*.md
+
+# Python artefacts
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+.venv
+venv
+**/.venv
+
+# Local secrets and data
+.env
+.env.*
+!.env.example
+data
+**/*.db
+**/*.sqlite3
+*.pem
+*.key
+
+# Local tooling
+docker-compose.yml
+Dockerfile
+.dockerignore

@@ -1,0 +1,20 @@
+# Local development stack: docker compose up --build
+services:
+  ecotrack:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ecotrack:local
+    container_name: ecotrack-local
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: development
+      LOG_LEVEL: info
+      SEED_DEMO: "true"
+    volumes:
+      - ecotrack-data:/data
+    restart: unless-stopped
+
+volumes:
+  ecotrack-data:
