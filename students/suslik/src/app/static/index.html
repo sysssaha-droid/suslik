@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="EcoTrack — dashboard for IoT telemetry" />
+    <title>EcoTrack · IoT telemetry</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">◈</span>
+        <div>
+          <h1>EcoTrack</h1>
+          <p>IoT telemetry dashboard</p>
+        </div>
+      </div>
+      <div class="status" id="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="status-text">connecting…</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="cards" aria-label="Summary">
+        <article class="card">
+          <p class="label">Readings</p>
+          <p class="value" id="total">—</p>
+          <p class="hint">total records</p>
+        </article>
+        <article class="card">
+          <p class="label">Devices</p>
+          <p class="value" id="devices">—</p>
+          <p class="hint">reporting sensors</p>
+        </article>
+        <article class="card">
+          <p class="label">Latest</p>
+          <p class="value small" id="latest">—</p>
+          <p class="hint">last measurement</p>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Add reading</h2>
+            <span class="tag">POST /api/readings</span>
+          </div>
+          <form id="reading-form" autocomplete="off">
+            <label>
+              Device
+              <input
+                name="device_id"
+                value="sensor-01"
+                pattern="[A-Za-z0-9._-]+"
+                maxlength="64"
+                required
+              />
+            </label>
+            <label>
+              Metric
+              <select name="metric">
+                <option value="temperature">temperature (°C)</option>
+                <option value="humidity">humidity (%)</option>
+                <option value="co2">co2 (ppm)</option>
+                <option value="pm25">pm25 (µg/m³)</option>
+                <option value="voltage">voltage (V)</option>
+              </select>
+            </label>
+            <label>
+              Value
+              <input name="value" type="number" step="any" value="21.5" required />
+            </label>
+            <button type="submit">Send reading</button>
+            <p class="form-message" id="form-message" role="status"></p>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Recent readings</h2>
+            <button class="ghost" id="refresh" type="button">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Device</th>
+                  <th>Metric</th>
+                  <th class="num">Value</th>
+                  <th>Recorded</th>
+                </tr>
+              </thead>
+              <tbody id="readings">
+                <tr>
+                  <td colspan="4" class="empty">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Metric averages</h2>
+          <span class="tag">GET /api/stats</span>
+        </div>
+        <div class="bars" id="metrics">
+          <p class="empty">No data yet.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      EcoTrack API · <a href="/docs">OpenAPI docs</a> ·
+      <a href="/health">health</a>
+    </footer>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
