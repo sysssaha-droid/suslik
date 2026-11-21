@@ -1,0 +1,24 @@
+# Repository-wide safety net.
+# Application-specific rules live in students/suslik/.gitignore.
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.b64
+
+# Terraform state (never commit)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform.tfvars
