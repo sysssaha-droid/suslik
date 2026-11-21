@@ -1,0 +1,52 @@
+# --- Secrets & environment -------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.b64
+ec2_key*
+
+# --- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Terraform -------------------------------------------------------------
+.terraform/
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+terraform.tfvars
+!terraform.tfvars.example
+
+# --- Application data ------------------------------------------------------
+data/
+*.db
+*.sqlite3
+*.log
+
+# --- Docker / OS / editors -------------------------------------------------
+.docker/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

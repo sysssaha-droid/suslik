@@ -1,0 +1,11 @@
+* text=auto
+
+# Shell scripts and container/IaC files must keep LF endings: CRLF breaks
+# shebangs on Linux and can corrupt cloud-init user data.
+*.sh        text eol=lf
+*.tftpl     text eol=lf
+*.tf        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+Dockerfile  text eol=lf
+*.py        text eol=lf
