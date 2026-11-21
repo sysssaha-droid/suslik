@@ -73,7 +73,7 @@ flowchart LR
 
 Що відбувається під час пушу:
 
-1. **Test** — встановлюються залежності, запускаються 7 pytest-тестів.
+1. **Test** — встановлюються залежності, запускаються 8 pytest-тестів.
 2. **Build & push** — Docker Buildx збирає образ і пушить два теги:
    `sha-<commit>` (незмінний, для деплою) та `latest`.
 3. **Terraform apply** — створює або оновлює EC2, Elastic IP, Security Group
@@ -98,7 +98,7 @@ students/suslik/
 │   │   ├── storage.py           # SQLite-репозиторій
 │   │   ├── main.py              # FastAPI app factory + маршрути
 │   │   └── static/              # дашборд: index.html, styles.css, app.js
-│   ├── tests/test_api.py        # 7 тестів API
+│   ├── tests/test_api.py        # 8 тестів API
 │   ├── requirements.txt
 │   └── requirements-dev.txt
 ├── infra/
